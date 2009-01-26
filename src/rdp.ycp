@@ -23,7 +23,7 @@ import "Report";
 import "CommandLine";
 import "RichText";
 
-include "network/rdp/dialogs.ycp";
+include "rdp/dialogs.ycp";
 
 /**
  * Main remote GUI
