@@ -9,7 +9,7 @@
 
 {
 
-textdomain "network";
+textdomain "rdp";
 
 /* The main () */
 y2milestone("----------------------------------------");
