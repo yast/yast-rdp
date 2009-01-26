@@ -18,7 +18,7 @@ y2milestone("Arguments: %1", WFM::Args());
 
 import "RDP";
 import "Wizard";
-include "network/rdp/dialogs.ycp";
+include "rdp/dialogs.ycp";
 
 string func = (string) WFM::Args(0);
 map param = (map) WFM::Args(1);
