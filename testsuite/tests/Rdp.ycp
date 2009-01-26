@@ -1,0 +1,13 @@
+{
+
+// testedfiles: RDP.ycp
+
+include "testsuite.ycp";
+TESTSUITE_INIT([], nil);
+
+import "RDP";
+
+DUMP("RDP::Modified");
+//TEST(``(RDP::Modified()), [], nil);
+
+}

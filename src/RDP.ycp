@@ -1,0 +1,173 @@
+/**
+ * File:	src/modules/RDP.ycp
+ * Module:	Network configuration
+ * Summary:	Module for Remote Administration via RDP
+ * Authors:	Arvin Schnell <arvin@suse.de>
+ *		Martin Vidner <mvidner@suse.cz>
+ *		David Reveman <davidr@novell.com>
+ *
+ */
+
+{
+
+module "RDP";
+textdomain "network";
+
+import "Label";
+import "Mode";
+import "Package";
+import "Service";
+import "SuSEFirewall";
+import "Progress";
+import "Linuxrc";
+
+include "network/routines.ycp";
+
+/**
+ * Allow remote administration
+ */
+global boolean allow_administration = false;
+
+/**
+ * Remote administration has been already proposed
+ * Only force-reset can change it
+ */
+boolean already_proposed = false;
+
+/**
+ * Reset all module data.
+ */
+global void Reset() {
+    already_proposed = true;
+
+    // Bugzilla #135605 - enabling Remote Administration when installing using VNC
+    if (Linuxrc::vnc()) {
+	allow_administration = true;
+    } else {
+	allow_administration = false;
+    }
+    y2milestone("Remote Administration was proposed as: %1", (allow_administration ? "enabled":"disabled"));
+}
+
+/**
+ * Function proposes a configuration
+ * But only if it hasn't been proposed already
+ */
+global void Propose() {
+    if (!already_proposed) Reset();
+}
+
+/**
+ * Read the current status
+ * @return true on success
+ */
+global boolean Read() {
+    list<string> packages = [ "xrdp" ];
+
+    if (!Package::InstallAll(packages)) {
+        y2error("Installing of required packages failed");
+        return false;
+    }
+
+    boolean xrdp = Service::Enabled ("xrdp");
+
+    y2milestone ("xrdp: %1", xrdp);
+    allow_administration = xrdp;
+
+    boolean current_progress = Progress::set(false);
+    SuSEFirewall::Read();
+    Progress::set(current_progress);
+
+    return true;
+}
+
+/**
+ * Update the SCR according to network settings
+ * @return true on success
+ */
+global boolean Write() {
+
+    list <string> steps = [
+        /* Progress stage 1 */
+        _("Write firewall settings"),
+        /* Progress stage 2 */
+	_("Configure xrdp"),
+    ];
+
+    if (Mode::normal()) {
+        /* Progress stage 3 */
+        if(allow_administration) {
+	    steps = add( steps, _("Restart the services") );
+        }
+        else {
+            steps = add( steps, _("Stop the services") );
+        }
+    }
+
+    string caption = _("Saving Remote Administration Configuration");
+    integer sl = 0; //100; //for testing
+
+    Progress::New(caption, " ", size(steps), steps, [], "");
+
+    ProgressNextStage(_("Writing firewall settings..."));
+    boolean current_progress = Progress::set(false);
+    SuSEFirewall::Write();
+    Progress::set(current_progress);
+    sleep(sl);
+
+    ProgressNextStage(_("Configuring xrdp..."));
+
+    if(allow_administration) {
+	/* Enable xrdp */
+	if(!Service::Enable("xrdp")) {
+	    y2error("Enabling of xrdp failed");
+	    return false;
+	}
+    }
+    else
+    {
+        /* Disable xrdp */
+        if (!Service::Disable("xrdp")) {
+            y2error("Disabling of xrdp failed");
+            return false;
+        }
+    }
+    sleep(sl);
+
+   if(Mode::normal ()) {
+	if (allow_administration) {
+            ProgressNextStage(_("Restarting the service..."));
+	    Service::Restart("xrdp");
+	}
+        else
+        {
+            ProgressNextStage(_("Stopping the service..."));
+            Service::Stop("xrdp");
+        }
+
+	sleep(sl);
+        Progress::NextStage();
+    }
+
+    return true;
+}
+
+/**
+ * Create summary
+ * @return summary text
+ */
+global define string Summary() {
+
+    if(allow_administration) {
+	/* Label in proposal text */
+	return _("Remote administration is enabled.");
+    }
+    else {
+	/* Label in proposal text */
+	return _("Remote administration is disabled.");
+    }
+
+}
+
+/* EOF */
+}
