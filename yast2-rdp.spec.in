@@ -25,7 +25,6 @@ Summary:	Configuration of rdp
 @yncludedir@/rdp/*
 @clientdir@/rdp.ycp
 @clientdir@/rdp_*.ycp
-@moduledir@/Rdp.*
-@moduledir@/Rdp2.*
+@moduledir@/RDP.*
 @desktopdir@/rdp.desktop
 %doc @docdir@
