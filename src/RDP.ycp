@@ -16,6 +16,7 @@ textdomain "rdp";
 import "Label";
 import "Mode";
 import "Package";
+import "PackageSystem";
 import "Service";
 import "SuSEFirewall";
 import "Progress";
@@ -64,7 +65,7 @@ global void Propose() {
 global boolean Read() {
     list<string> packages = [ "xrdp" ];
 
-    if (!Package::InstallAll(packages)) {
+    if (!PackageSystem::CheckAndInstallPackagesInteractive (packages)) {
         y2error("Installing of required packages failed");
         return false;
     }
