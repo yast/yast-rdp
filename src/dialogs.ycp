@@ -23,8 +23,6 @@ include "network/routines.ycp";
  */
 define symbol RemoteMainDialog() {
 
-    ScreenName("rdp");
-
     /* Ramote Administration dialog caption */
     string caption = _("Remote Administration");
 
