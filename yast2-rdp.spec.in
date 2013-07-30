@@ -6,6 +6,8 @@ BuildRequires:	perl-XML-Writer update-desktop-files yast2 yast2-devtools yast2-t
 
 BuildArchitectures:	noarch
 
+Requires:       yast2-ruby-bindings >= 1.0.0
+
 Summary:	Configuration of rdp
 
 %description
@@ -23,8 +25,8 @@ Summary:	Configuration of rdp
 %defattr(-,root,root)
 %dir @yncludedir@/rdp
 @yncludedir@/rdp/*
-@clientdir@/rdp.ycp
-@clientdir@/rdp_*.ycp
+@clientdir@/rdp.rb
+@clientdir@/rdp_*.rb
 @moduledir@/RDP.*
 @desktopdir@/rdp.desktop
 %doc @docdir@
