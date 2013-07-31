@@ -1,25 +1,19 @@
-# Makefile.am for rdp/src
+# Sources for rdp
+
+module_DATA = \
+  modules/RDP.rb
+
+client_DATA = \
+  clients/rdp_proposal.rb \
+  clients/rdp.rb
 
 yncludedir = @yncludedir@/rdp
+ynclude_DATA = \
+  include/rdp/dialogs.rb
 
-client_DATA =			\
-	rdp.ycp		\
-	rdp_proposal.ycp
+desktop_DATA = \
+  desktop/rdp.desktop
 
-ynclude_DATA =			\
-	dialogs.ycp
-
-desktop_DATA =			\
-	rdp.desktop
-
-module_DATA =			\
-	RDP.ycp
-
-# create a symlink for local build, #145327
-rdp:
-	ln -sf . $@
-ycpchook = rdp
-
-EXTRA_DIST = $(client_DATA) $(ynclude_DATA) $(module_DATA) $(desktop_DATA)
+EXTRA_DIST = $(module_DATA) $(client_DATA) $(ynclude_DATA) $(desktop_DATA)
 
 include $(top_srcdir)/Makefile.am.common
