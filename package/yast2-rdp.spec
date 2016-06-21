@@ -36,7 +36,7 @@ Requires:       yast2-ruby-bindings >= 1.0.0
 Summary:	Configuration of rdp
 
 %description
--
+Configuration of X Remote Desktop Server
 
 %prep
 %setup -n %{name}-%{version}
