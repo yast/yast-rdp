@@ -38,12 +38,7 @@ module Yast
     def Reset
       @already_proposed = true
 
-      # Bugzilla #135605 - enabling Remote Administration when installing using VNC
-      if Linuxrc.vnc
-        @allow_administration = true
-      else
-        @allow_administration = false
-      end
+      @allow_administration = true
       Builtins.y2milestone(
         "Remote Administration was proposed as: %1",
         @allow_administration ? "enabled" : "disabled"

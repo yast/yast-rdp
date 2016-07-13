@@ -1,4 +1,15 @@
 -------------------------------------------------------------------
+Wed Jul 13 13:23:57 UTC 2016 - varkoly@suse.com
+
+- FATE#320363 Install and enable xrdp by default
+  When using the rdp proposal activate is the default.
+
+-------------------------------------------------------------------
+Tue Jun 21 04:47:51 UTC 2016 - varkoly@suse.com
+
+- FATE#320363 Install and enable xrdp by default 
+
+-------------------------------------------------------------------
 Thu Dec  4 09:51:11 UTC 2014 - jreidinger@suse.com
 
 - remove X-KDE-Library from desktop file (bnc#899104)

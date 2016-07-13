@@ -17,7 +17,7 @@
 
 
 Name:           yast2-rdp
-Version:        3.1.1
+Version:        3.1.2
 Release:        0
 License:	GPL-2.0
 Group:		System/YaST
@@ -36,7 +36,7 @@ Requires:       yast2-ruby-bindings >= 1.0.0
 Summary:	Configuration of rdp
 
 %description
--
+Configuration of X Remote Desktop Server
 
 %prep
 %setup -n %{name}-%{version}
