@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Jul 13 13:23:57 UTC 2016 - varkoly@suse.com
+
+- FATE#320363 Install and enable xrdp by default
+  When using the rdp proposal activate is the default.
+
+-------------------------------------------------------------------
 Tue Jun 21 04:47:51 UTC 2016 - varkoly@suse.com
 
 - FATE#320363 Install and enable xrdp by default 
