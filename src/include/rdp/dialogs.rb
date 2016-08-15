@@ -15,7 +15,6 @@ module Yast
       Yast.import "Label"
       Yast.import "RDP"
       Yast.import "Wizard"
-      Yast.import "CWMFirewallInterfaces"
 
       Yast.include include_target, "network/routines.rb"
     end
@@ -23,85 +22,39 @@ module Yast
     # Remote administration dialog
     # @return dialog result
     def RemoteMainDialog
-      # Ramote Administration dialog caption
-      caption = _("Remote Administration")
-
-      allow_buttons = RadioButtonGroup(
-        VBox(
-          # RadioButton label
-          Left(
-            RadioButton(Id(:allow), _("&Allow Remote Administration"), false)
-          ),
-          # RadioButton label
-          Left(
-            RadioButton(
-              Id(:disallow),
-              _("&Do Not Allow Remote Administration"),
-              false
-            )
-          )
-        )
-      )
-
-      firewall_widget = CWMFirewallInterfaces.CreateOpenFirewallWidget(
-        { "services" => ["service:xrdp"], "display_details" => true }
-      )
-      firewall_layout = Ops.get_term(firewall_widget, "custom_widget", VBox())
-      firewall_help = Ops.get_string(firewall_widget, "help", "")
-
-      help = Ops.add(
-        Builtins.sformat(
-          _(
-            "<p><b><big>Remote Administration Settings</big></b></p>\n" +
-              "<p>If this feature is enabled, you can\n" +
-              "administer this machine remotely from another machine. Use a RDP\n" +
-              "client, such as rdesktop (connect to <tt>&lt;hostname&gt;:%1</tt>).\n" +
-              "This form of remote administration is less secure than using SSH.</p>\n"
-          ),
-          3389
-        ),
-        firewall_help
-      )
-
-      # Remote Administration dialog contents
+      # Dialog contents
       contents = HBox(
         HStretch(),
         VBox(
           Frame(
-            # Dialog frame title
-            _("Remote Administration Settings"),
-            allow_buttons
-          ),
-          VSpacing(1),
-          Frame(
-            # Dialog frame title
-            _("Firewall Settings"),
-            firewall_layout
+            _("Settings"),
+            VBox(
+                Left(CheckBox(Id(:enable), _('Enable RDP (Remote Desktop Protocol) Service'), RDP.allow_administration)),
+                Left(CheckBox(Id(:open_fw_port), _('Open Port in Firewall'), RDP.open_fw_port))
+            )
           )
         ),
         HStretch()
       )
 
+      help = _("<p><b><big>Remote Administration via RDP</big></b></p>\n" +
+              "<p>Remote Desktop Protocol (RDP) is a secure remote administration protocol " +
+              "running on TCP port 3389.</p>" +
+              "<p>If the feature is enabled, you will be able to login to this computer\n" +
+              "remotely via an RDP client such as Windows Remote Desktop Viewer.\n")
       Wizard.SetContentsButtons(
-        caption,
+        _("Remote Administration via RDP"),
         contents,
         help,
         Label.BackButton,
         Label.FinishButton
       )
 
-      UI.ChangeWidget(Id(:allow), :Value, RDP.allow_administration)
-      UI.ChangeWidget(Id(:disallow), :Value, !RDP.allow_administration)
-
-      CWMFirewallInterfaces.OpenFirewallInit(firewall_widget, "")
-
       ret = nil
       event = nil
       begin
         event = UI.WaitForEvent
         ret = Ops.get(event, "ID")
-
-        CWMFirewallInterfaces.OpenFirewallHandle(firewall_widget, "", event)
 
         if ret == :abort
           break
@@ -113,10 +66,8 @@ module Yast
       end until ret == :next || ret == :back
 
       if ret == :next
-        CWMFirewallInterfaces.OpenFirewallStore(firewall_widget, "", event)
-        RDP.allow_administration = Convert.to_boolean(
-          UI.QueryWidget(Id(:allow), :Value)
-        )
+        RDP.allow_administration = UI.QueryWidget(Id(:enable), :Value)
+        RDP.open_fw_port = UI.QueryWidget(Id(:open_fw_port), :Value)
       end
 
       Convert.to_symbol(ret)

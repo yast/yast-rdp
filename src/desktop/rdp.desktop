@@ -14,11 +14,12 @@ X-SuSE-YaST-AutoInst=write
 X-SuSE-YaST-Geometry=
 X-SuSE-YaST-SortKey=
 X-SuSE-YaST-AutoInstResource=rdp
+X-SuSE-YaST-Keywords=remote,desktop,rdp
 
 Icon=yast-remote
-Exec=/sbin/yast2 rdp
+Exec=xdg-su -c "/sbin/yast2 rdp"
 
 Name=Remote Administration (RDP)
-GenericName=Set up remote administration
-X-KDE-SubstituteUID=true
+GenericName=Configure RDP (Remote Desktop Protocol)
 StartupNotify=true
+X-KDE-SubstituteUID=true

@@ -1,7 +1,7 @@
 #
 # spec file for package yast2-rdp
 #
-# Copyright (c) 2013 SUSE LINUX Products GmbH, Nuernberg, Germany.
+# Copyright (c) 2016 SUSE LINUX GmbH, Nuernberg, Germany.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -15,28 +15,21 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-
 Name:           yast2-rdp
-Version:        3.1.2
+Version:        3.1.3
 Release:        0
-License:	GPL-2.0
-Group:		System/YaST
-
-BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+License:        GPL-2.0
+Group:          System/YaST
+Summary:        Setup Remote Desktop Protocol service for remote administration
+URL:            https://www.suse.com
 Source0:        %{name}-%{version}.tar.bz2
-
-Requires:	yast2
-BuildRequires:	perl-XML-Writer update-desktop-files yast2 yast2-testsuite yast2-network
-BuildRequires:  yast2-devtools >= 3.1.10
-
-BuildArchitectures:	noarch
-
-Requires:       yast2-ruby-bindings >= 1.0.0
-
-Summary:	Configuration of rdp
+BuildArch:      noarch
+BuildRequires:  perl-XML-Writer update-desktop-files yast2 yast2-testsuite yast2-network
+BuildRequires:  yast2-devtools
+Requires:       yast2 yast2-ruby-bindings
 
 %description
-Configuration of X Remote Desktop Server
+Configure RDP (remote desktop protocol) daemon to allow remote system administration.
 
 %prep
 %setup -n %{name}-%{version}
@@ -47,7 +40,6 @@ Configuration of X Remote Desktop Server
 %install
 %yast_install
 
-
 %files
 %defattr(-,root,root)
 %dir %{yast_yncludedir}/rdp
@@ -57,3 +49,5 @@ Configuration of X Remote Desktop Server
 %{yast_moduledir}/RDP.*
 %{yast_desktopdir}/rdp.desktop
 %doc %{yast_docdir}
+
+%changelog

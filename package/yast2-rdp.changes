@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Thu Aug  4 13:57:21 UTC 2016 - hguo@suse.com
+
+- Remove unnecessary files from source archive and fix build errors.
+- Fix firewall setup and rdp service activation for an installed
+  system. (bsc#988353 bsc#991238 bsc#988200)
+- Other tidy-ups around spec file and source code.
+
+-------------------------------------------------------------------
 Wed Jul 13 13:23:57 UTC 2016 - varkoly@suse.com
 
 - FATE#320363 Install and enable xrdp by default

@@ -32,13 +32,19 @@ module Yast
       # Remote administration has been already proposed
       # Only force-reset can change it
       @already_proposed = false
+
+      # True only if the port is open in all firewall zones
+      @open_fw_port = false
     end
+    
+    attr_accessor(:open_fw_port, :allow_administration)
 
     # Reset all module data.
     def Reset
       @already_proposed = true
 
       @allow_administration = true
+      @open_fw_port = true
       Builtins.y2milestone(
         "Remote Administration was proposed as: %1",
         @allow_administration ? "enabled" : "disabled"
@@ -73,7 +79,8 @@ module Yast
       current_progress = Progress.set(false)
       SuSEFirewall.Read
       Progress.set(current_progress)
-
+      @open_fw_port = SuSEFirewall.IsServiceDefinedByPackageSupportedInZone('service:xrdp', 'EXT') &&
+                      SuSEFirewall.IsServiceDefinedByPackageSupportedInZone('service:xrdp', 'INT')
       true
     end
 
@@ -96,13 +103,21 @@ module Yast
         end
       end
 
-      caption = _("Saving Remote Administration Configuration")
+      caption = _("Saving Remote Administration (RDP) Configuration")
       sl = 0 #100; //for testing
 
       Progress.New(caption, " ", Builtins.size(steps), steps, [], "")
 
       ProgressNextStage(_("Writing firewall settings..."))
       current_progress = Progress.set(false)
+
+      if @open_fw_port
+          SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "EXT")
+          SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "INT")
+      else
+          SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "EXT")
+          SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "INT")
+      end
       SuSEFirewall.Write
       Progress.set(current_progress)
       Builtins.sleep(sl)
@@ -145,14 +160,13 @@ module Yast
     def Summary
       if @allow_administration
         # Label in proposal text
-        return _("Remote administration is enabled.")
+        return _("RDP (remote desktop protocol) service is enabled.")
       else
         # Label in proposal text
-        return _("Remote administration is disabled.")
+        return _("RDP (remote desktop protocol) service is disabled.")
       end
     end
 
-    publish :variable => :allow_administration, :type => "boolean"
     publish :function => :Reset, :type => "void ()"
     publish :function => :Propose, :type => "void ()"
     publish :function => :Read, :type => "boolean ()"
