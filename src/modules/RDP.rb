@@ -20,6 +20,7 @@ module Yast
       Yast.import "Package"
       Yast.import "PackageSystem"
       Yast.import "Service"
+      Yast.import "ServicesProposal"
       Yast.import "SuSEFirewall"
       Yast.import "Progress"
       Yast.import "Linuxrc"
@@ -126,15 +127,23 @@ module Yast
 
       if @allow_administration
         # Enable xrdp
-        if !Service.Enable("xrdp")
-          Builtins.y2error("Enabling of xrdp failed")
-          return false
+        if (Mode.installation || Mode.autoinst)
+          ServicesProposal.enable_service("xrdp")
+        else
+          if !Service.Enable("xrdp")
+            Builtins.y2error("Enabling of xrdp failed")
+            return false
+          end
         end
       else
         # Disable xrdp
-        if !Service.Disable("xrdp")
-          Builtins.y2error("Disabling of xrdp failed")
-          return false
+        if (Mode.installation || Mode.autoinst)
+          ServicesProposal.disable_service("xrdp")
+        else
+          if !Service.Enable("xrdp")
+            Builtins.y2error("Enabling of xrdp failed")
+            return false
+          end
         end
       end
       Builtins.sleep(sl)
