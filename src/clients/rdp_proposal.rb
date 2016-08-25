@@ -20,6 +20,9 @@ module Yast
 
       Yast.import "RDP"
       Yast.import "Wizard"
+      Yast.import "PackagesProposal"
+      Yast.import "ServicesProposal"
+      Yast.import "SuSEFirewallProposal"
       Yast.include self, "rdp/dialogs.rb"
 
       @func = Convert.to_string(WFM.Args(0))
@@ -38,7 +41,17 @@ module Yast
         else
           RDP.Propose
         end
-        RDP.Write
+        if RDP.open_fw_port
+            SuSEFirewallProposal.OpenServiceOnNonDialUpInterfaces("service:xrdp",["3389"])
+            SuSEFirewallProposal.SetChangedByUser(true)
+        end
+	if RDP.allow_administration
+          PackagesProposal.AddResolvables('xrdp',:package,['xrdp'])
+          ServicesProposal.enable_service("xrdp")
+        else
+          PackagesProposal.RemoveResolvables('xrdp',:package,['xrdp'])
+          ServicesProposal.disable_service("xrdp")
+        end
         @ret = { "raw_proposal" => [RDP.Summary] }
       # run the module
       elsif @func == "AskUser"
