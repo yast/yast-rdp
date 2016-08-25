@@ -21,7 +21,9 @@ module Yast
       Yast.import "PackageSystem"
       Yast.import "Service"
       Yast.import "ServicesProposal"
+      Yast.import "PackagesProposal"
       Yast.import "SuSEFirewall"
+      Yast.import "SuSEFirewallProposal"
       Yast.import "Progress"
       Yast.import "Linuxrc"
 
@@ -112,14 +114,21 @@ module Yast
       ProgressNextStage(_("Writing firewall settings..."))
       current_progress = Progress.set(false)
 
-      if @open_fw_port
-          SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "EXT")
-          SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "INT")
+      if (Mode.installation || Mode.autoinst)
+         if @open_fw_port
+             SuSEFirewallProposal.OpenServiceOnNonDialUpInterfaces("service:xrdp","3389")
+             SuSEFirewallProposal.SetChangedByUser(true)
+         end
       else
-          SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "EXT")
-          SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "INT")
+          if @open_fw_port
+              SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "EXT")
+              SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "INT")
+          else
+              SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "EXT")
+              SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "INT")
+          end
+          SuSEFirewall.Write
       end
-      SuSEFirewall.Write
       Progress.set(current_progress)
       Builtins.sleep(sl)
 
@@ -128,6 +137,7 @@ module Yast
       if @allow_administration
         # Enable xrdp
         if (Mode.installation || Mode.autoinst)
+          PackagesProposal.AddResolvables('xrdp',:package,['xrdp'])
           ServicesProposal.enable_service("xrdp")
         else
           if !Service.Enable("xrdp")
@@ -138,6 +148,7 @@ module Yast
       else
         # Disable xrdp
         if (Mode.installation || Mode.autoinst)
+          PackagesProposal.RemoveResolvables('xrdp',:package,['xrdp'])
           ServicesProposal.disable_service("xrdp")
         else
           if !Service.Enable("xrdp")
