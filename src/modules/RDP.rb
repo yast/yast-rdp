@@ -116,7 +116,7 @@ module Yast
 
       if (Mode.installation || Mode.autoinst)
          if @open_fw_port
-             SuSEFirewallProposal.OpenServiceOnNonDialUpInterfaces("service:xrdp","3389")
+             SuSEFirewallProposal.OpenServiceOnNonDialUpInterfaces("service:xrdp",["3389"])
              SuSEFirewallProposal.SetChangedByUser(true)
          end
       else
