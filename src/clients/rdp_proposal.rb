@@ -38,6 +38,7 @@ module Yast
         else
           RDP.Propose
         end
+        RDP.Write
         @ret = { "raw_proposal" => [RDP.Summary] }
       # run the module
       elsif @func == "AskUser"
