@@ -111,14 +111,21 @@ module Yast
       ProgressNextStage(_("Writing firewall settings..."))
       current_progress = Progress.set(false)
 
-      if @open_fw_port
-          SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "EXT")
-          SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "INT")
+      if (Mode.installation || Mode.autoinst)
+         if @open_fw_port
+             SuSEFirewallProposal.OpenServiceOnNonDialUpInterfaces("service:xrdp",["3389"])
+             SuSEFirewallProposal.SetChangedByUser(true)
+         end
       else
-          SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "EXT")
-          SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "INT")
+          if @open_fw_port
+              SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "EXT")
+              SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "INT")
+          else
+              SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "EXT")
+              SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "INT")
+          end
+          SuSEFirewall.Write
       end
-      SuSEFirewall.Write
       Progress.set(current_progress)
       Builtins.sleep(sl)
 
@@ -133,7 +140,7 @@ module Yast
       else
         # Disable xrdp
         if !Service.Disable("xrdp")
-          Builtins.y2error("Disabling of xrdp failed")
+          Builtins.y2error("Enabling of xrdp failed")
           return false
         end
       end
