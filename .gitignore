@@ -19,3 +19,6 @@ stamp-h
 rdp.pot
 autom4te.cache
 *.ami
+.yardoc/
+/doc/autodocs/
+testsuite/raw.tmp.*

@@ -8,9 +8,11 @@
 #		David Reveman <davidr@novell.com>
 #
 require "yast"
+require "y2firewall/firewalld"
 
 module Yast
   class RDPClass < Module
+    FW_ZONES = ["public", "external", "internal", "work", "home", "trusted"].freeze
     def main
       Yast.import "UI"
       textdomain "rdp"
@@ -20,7 +22,6 @@ module Yast
       Yast.import "Package"
       Yast.import "PackageSystem"
       Yast.import "Service"
-      Yast.import "SuSEFirewall"
       Yast.import "Progress"
       Yast.import "Linuxrc"
 
@@ -36,8 +37,12 @@ module Yast
       # True only if the port is open in all firewall zones
       @open_fw_port = false
     end
-    
+
     attr_accessor(:open_fw_port, :allow_administration)
+
+    def firewalld
+      Y2Firewall::Firewalld.instance
+    end
 
     # Reset all module data.
     def Reset
@@ -77,10 +82,9 @@ module Yast
       @allow_administration = xrdp
 
       current_progress = Progress.set(false)
-      SuSEFirewall.Read
+      firewalld.read
       Progress.set(current_progress)
-      @open_fw_port = SuSEFirewall.IsServiceDefinedByPackageSupportedInZone('service:xrdp', 'EXT') &&
-                      SuSEFirewall.IsServiceDefinedByPackageSupportedInZone('service:xrdp', 'INT')
+      @open_fw_port = firewalld.zones.any? { |z| z.services.include?("xrdp") }
       true
     end
 
@@ -109,17 +113,7 @@ module Yast
       Progress.New(caption, " ", Builtins.size(steps), steps, [], "")
 
       ProgressNextStage(_("Writing firewall settings..."))
-      current_progress = Progress.set(false)
-
-      if @open_fw_port
-          SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "EXT")
-          SuSEFirewall.AddServiceDefinedByPackageIntoZone("service:xrdp", "INT")
-      else
-          SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "EXT")
-          SuSEFirewall.RemoveServiceDefinedByPackageFromZone("service:xrdp", "INT")
-      end
-      SuSEFirewall.Write
-      Progress.set(current_progress)
+      write_firewall_setting
       Builtins.sleep(sl)
 
       ProgressNextStage(_("Configuring xrdp..."))
@@ -165,6 +159,21 @@ module Yast
         # Label in proposal text
         return _("RDP (remote desktop protocol) service is disabled.")
       end
+    end
+
+    # Modify the firewall modifications if it is installed and the zones are
+    # available
+    def write_firewall_setting
+      return unless firewalld.installed?
+      FW_ZONES.each do |name|
+        zone = firewall.find_zone(name)
+        unless zone
+          Builtins.y2error("Firewalld zone #{name} is not available.")
+          next
+        end
+        @open_fw_port ? zone.add_service("xrdp") : zone.remove_service("xrdp")
+      end
+      firewalld.write
     end
 
     publish :function => :Reset, :type => "void ()"
