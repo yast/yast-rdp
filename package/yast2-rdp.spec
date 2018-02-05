@@ -16,7 +16,7 @@
 #
 
 Name:           yast2-rdp
-Version:        3.1.3
+Version:        4.0.0
 Release:        0
 License:        GPL-2.0
 Group:          System/YaST
@@ -24,9 +24,13 @@ Summary:        Setup Remote Desktop Protocol service for remote administration
 URL:            https://www.suse.com
 Source0:        %{name}-%{version}.tar.bz2
 BuildArch:      noarch
-BuildRequires:  perl-XML-Writer update-desktop-files yast2 yast2-testsuite yast2-network
+# SuSEFirewall2 replaced by firewalld (fate#323460)
+BuildRequires:  yast2 >= 4.0.39
+BuildRequires:  perl-XML-Writer update-desktop-files yast2-testsuite yast2-network
 BuildRequires:  yast2-devtools
-Requires:       yast2 yast2-ruby-bindings
+# SuSEFirewall2 replaced by firewalld (fate#323460)
+Requires:       yast2 >= 4.0.39
+Requires:       yast2-ruby-bindings
 
 %description
 Configure RDP (remote desktop protocol) daemon to allow remote system administration.
