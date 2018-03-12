@@ -13,6 +13,8 @@ require "y2firewall/firewalld"
 module Yast
   class RDPClass < Module
     FW_ZONES = ["public", "external", "internal", "work", "home", "trusted"].freeze
+    # Use firewalld remote desktop service
+    FW_SERVICE = "ms-wbt".freeze
     def main
       Yast.import "UI"
       textdomain "rdp"
@@ -84,7 +86,7 @@ module Yast
       current_progress = Progress.set(false)
       firewalld.read
       Progress.set(current_progress)
-      @open_fw_port = firewalld.zones.any? { |z| z.services.include?("xrdp") }
+      @open_fw_port = firewalld.zones.any? { |z| z.services.include?(FW_SERVICE) }
       true
     end
 
@@ -171,7 +173,7 @@ module Yast
           Builtins.y2error("Firewalld zone #{name} is not available.")
           next
         end
-        @open_fw_port ? zone.add_service("xrdp") : zone.remove_service("xrdp")
+        @open_fw_port ? zone.add_service(FW_SERVICE) : zone.remove_service(FW_SERVICE)
       end
       firewalld.write
     end
