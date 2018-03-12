@@ -168,7 +168,7 @@ module Yast
     def write_firewall_setting
       return unless firewalld.installed?
       FW_ZONES.each do |name|
-        zone = firewall.find_zone(name)
+        zone = firewalld.find_zone(name)
         unless zone
           Builtins.y2error("Firewalld zone #{name} is not available.")
           next
