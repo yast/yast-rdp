@@ -13,6 +13,8 @@ require "y2firewall/firewalld"
 module Yast
   class RDPClass < Module
     FW_ZONES = ["public", "external", "internal", "work", "home", "trusted"].freeze
+    # Use firewalld remote desktop service
+    FW_SERVICE = "ms-wbt".freeze
     def main
       Yast.import "UI"
       textdomain "rdp"
@@ -81,10 +83,8 @@ module Yast
       Builtins.y2milestone("xrdp: %1", xrdp)
       @allow_administration = xrdp
 
-      current_progress = Progress.set(false)
       firewalld.read
-      Progress.set(current_progress)
-      @open_fw_port = firewalld.zones.any? { |z| z.services.include?("xrdp") }
+      @open_fw_port = firewalld.zones.any? { |z| z.services.include?(FW_SERVICE) }
       true
     end
 
@@ -113,7 +113,7 @@ module Yast
       Progress.New(caption, " ", Builtins.size(steps), steps, [], "")
 
       ProgressNextStage(_("Writing firewall settings..."))
-      write_firewall_setting
+      write_firewall_settings
       Builtins.sleep(sl)
 
       ProgressNextStage(_("Configuring xrdp..."))
@@ -163,15 +163,15 @@ module Yast
 
     # Modify the firewall modifications if it is installed and the zones are
     # available
-    def write_firewall_setting
+    def write_firewall_settings
       return unless firewalld.installed?
       FW_ZONES.each do |name|
-        zone = firewall.find_zone(name)
+        zone = firewalld.find_zone(name)
         unless zone
           Builtins.y2error("Firewalld zone #{name} is not available.")
           next
         end
-        @open_fw_port ? zone.add_service("xrdp") : zone.remove_service("xrdp")
+        @open_fw_port ? zone.add_service(FW_SERVICE) : zone.remove_service(FW_SERVICE)
       end
       firewalld.write
     end

@@ -16,7 +16,7 @@
 #
 
 Name:           yast2-rdp
-Version:        4.0.0
+Version:        4.0.1
 Release:        0
 License:        GPL-2.0
 Group:          System/YaST
@@ -38,11 +38,13 @@ Configure RDP (remote desktop protocol) daemon to allow remote system administra
 %prep
 %setup -n %{name}-%{version}
 
+%check
+rake test:unit
+
 %build
-%yast_build
 
 %install
-%yast_install
+rake install DESTDIR="%{buildroot}"
 
 %files
 %defattr(-,root,root)
