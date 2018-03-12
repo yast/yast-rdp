@@ -7,3 +7,4 @@ rdp.pot
 autom4te.cache
 .yardoc/
 /doc/autodocs/
+/coverage
