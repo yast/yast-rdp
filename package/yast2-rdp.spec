@@ -28,6 +28,10 @@ BuildArch:      noarch
 BuildRequires:  yast2 >= 4.0.39
 BuildRequires:  perl-XML-Writer update-desktop-files yast2-testsuite yast2-network
 BuildRequires:  yast2-devtools
+# for install task
+BuildRequires:  rubygem(%rb_default_ruby_abi:yast-rake)
+# for test:unit
+BuildRequires:  rubygem(%rb_default_ruby_abi:rspec)
 # SuSEFirewall2 replaced by firewalld (fate#323460)
 Requires:       yast2 >= 4.0.39
 Requires:       yast2-ruby-bindings
