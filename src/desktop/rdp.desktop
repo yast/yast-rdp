@@ -14,7 +14,7 @@ X-SuSE-YaST-AutoInst=write
 X-SuSE-YaST-Geometry=
 X-SuSE-YaST-SortKey=
 X-SuSE-YaST-AutoInstResource=rdp
-X-SuSE-YaST-Keywords=remote,desktop,rdp
+X-SuSE-YaST-Keywords=remote,desktop,rdp,network,windows
 
 Icon=yast-remote
 Exec=xdg-su -c "/sbin/yast2 rdp"

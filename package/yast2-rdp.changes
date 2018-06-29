@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jun 26 16:27:44 CEST 2018 - schubi@suse.de
+
+- Added additional searchkeys to desktop file (fate#321043).
+- 4.0.2
+
+-------------------------------------------------------------------
 Mon Mar 12 07:40:34 UTC 2018 - knut.anderssen@suse.com
 
 - Use firewalld terminal server service definition (bsc#1079133).
