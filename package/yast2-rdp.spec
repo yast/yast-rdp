@@ -18,7 +18,7 @@
 Name:           yast2-rdp
 Version:        4.0.2
 Release:        0
-License:        GPL-2.0
+License:        GPL-2.0-only
 Group:          System/YaST
 Summary:        Setup Remote Desktop Protocol service for remote administration
 URL:            https://www.suse.com
