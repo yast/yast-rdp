@@ -1,7 +1,7 @@
 -------------------------------------------------------------------
 Fri Aug 17 15:04:55 CEST 2018 - schubi@suse.de
 
-- Changed licence to GPL-2.0-only.
+- Switched license in spec file from SPDX2 to SPDX3 format.
 
 -------------------------------------------------------------------
 Tue Jun 26 16:27:44 CEST 2018 - schubi@suse.de
