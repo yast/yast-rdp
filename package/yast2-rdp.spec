@@ -58,6 +58,7 @@ rake install DESTDIR="%{buildroot}"
 %{yast_clientdir}/rdp_*.rb
 %{yast_moduledir}/RDP.*
 %{yast_desktopdir}/rdp.desktop
+%license COPYING
 %doc %{yast_docdir}
 
 %changelog
