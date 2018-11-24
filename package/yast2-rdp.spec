@@ -16,7 +16,7 @@
 #
 
 Name:           yast2-rdp
-Version:        4.0.2
+Version:        4.0.3
 Release:        0
 License:        GPL-2.0-only
 Group:          System/YaST
@@ -58,6 +58,7 @@ rake install DESTDIR="%{buildroot}"
 %{yast_clientdir}/rdp_*.rb
 %{yast_moduledir}/RDP.*
 %{yast_desktopdir}/rdp.desktop
+%{_datadir}/icons/*
 %license COPYING
 %doc %{yast_docdir}
 

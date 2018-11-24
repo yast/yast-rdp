@@ -16,7 +16,7 @@ X-SuSE-YaST-SortKey=
 X-SuSE-YaST-AutoInstResource=rdp
 X-SuSE-YaST-Keywords=remote,desktop,rdp,network,windows
 
-Icon=yast-remote
+Icon=yast-remote-rdp
 Exec=xdg-su -c "/sbin/yast2 rdp"
 
 Name=Remote Administration (RDP)
