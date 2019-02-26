@@ -16,7 +16,7 @@
 #
 
 Name:           yast2-rdp
-Version:        4.0.3
+Version:        4.1.0
 Release:        0
 License:        GPL-2.0-only
 Group:          System/YaST
