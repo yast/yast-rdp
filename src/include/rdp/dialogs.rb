@@ -15,8 +15,6 @@ module Yast
       Yast.import "Label"
       Yast.import "RDP"
       Yast.import "Wizard"
-
-      Yast.include include_target, "network/routines.rb"
     end
 
     # Remote administration dialog
