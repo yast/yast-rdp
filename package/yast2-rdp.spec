@@ -58,9 +58,9 @@ Configure RDP (remote desktop protocol) daemon to allow remote system administra
 %files
 %{yast_yncludedir}
 %{yast_clientdir}
-%{yast_clientdir}
 %{yast_moduledir}
 %{yast_desktopdir}
+%{yast_metainfodir}
 %{yast_icondir}
 %license COPYING
 %doc %{yast_docdir}
