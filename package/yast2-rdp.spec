@@ -12,7 +12,7 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
+# Please submit bugfixes or comments via https://bugs.opensuse.org/
 #
 
 Name:           yast2-rdp
@@ -21,9 +21,10 @@ Release:        0
 License:        GPL-2.0-only
 Group:          System/YaST
 Summary:        Setup Remote Desktop Protocol service for remote administration
-URL:            https://www.suse.com
+Url:            https://github.com/yast/yast-rdp
+
 Source0:        %{name}-%{version}.tar.bz2
-BuildArch:      noarch
+
 # SuSEFirewall2 replaced by firewalld (fate#323460)
 BuildRequires:  yast2 >= 4.0.39
 BuildRequires:  perl-XML-Writer update-desktop-files yast2-testsuite yast2-network
@@ -32,32 +33,34 @@ BuildRequires:  yast2-devtools
 BuildRequires:  rubygem(%rb_default_ruby_abi:yast-rake)
 # for test:unit
 BuildRequires:  rubygem(%rb_default_ruby_abi:rspec)
+
 # SuSEFirewall2 replaced by firewalld (fate#323460)
 Requires:       yast2 >= 4.0.39
 Requires:       yast2-ruby-bindings
+
+BuildArch:      noarch
 
 %description
 Configure RDP (remote desktop protocol) daemon to allow remote system administration.
 
 %prep
-%setup -n %{name}-%{version}
+%setup -q
 
 %check
-rake test:unit
+%yast_check
 
 %build
 
 %install
-rake install DESTDIR="%{buildroot}"
+%yast_install
+%yast_metainfo
 
 %files
-%defattr(-,root,root)
-%dir %{yast_yncludedir}/rdp
-%{yast_yncludedir}/rdp/*
-%{yast_clientdir}/rdp.rb
-%{yast_clientdir}/rdp_*.rb
-%{yast_moduledir}/RDP.*
-%{yast_desktopdir}/rdp.desktop
+%{yast_yncludedir}
+%{yast_clientdir}
+%{yast_clientdir}
+%{yast_moduledir}
+%{yast_desktopdir}
 %{yast_icondir}
 %license COPYING
 %doc %{yast_docdir}
