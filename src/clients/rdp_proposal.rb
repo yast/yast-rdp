@@ -44,7 +44,7 @@ module Yast
         # single dialog, no need to Export/Import
 
         Wizard.CreateDialog
-        Wizard.SetDesktopIcon("org.openSUSE.YaST.RDP")
+        Wizard.SetDesktopIcon("org.opensuse.yast.RDP")
         @result = RemoteMainDialog()
         UI.CloseDialog
 
