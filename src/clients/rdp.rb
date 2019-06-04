@@ -86,7 +86,7 @@ module Yast
       RDP.Read
 
       Wizard.CreateDialog
-      Wizard.SetDesktopIcon("remote")
+      Wizard.SetDesktopIcon("org.opensuse.yast.RDP")
       Wizard.SetNextButton(:next, Label.FinishButton)
 
       ret = RemoteMainDialog()
