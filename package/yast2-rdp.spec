@@ -16,7 +16,7 @@
 #
 
 Name:           yast2-rdp
-Version:        4.0.2
+Version:        4.0.2.1
 Release:        0
 License:        GPL-2.0
 Group:          System/YaST
@@ -26,7 +26,7 @@ Source0:        %{name}-%{version}.tar.bz2
 BuildArch:      noarch
 # SuSEFirewall2 replaced by firewalld (fate#323460)
 BuildRequires:  yast2 >= 4.0.39
-BuildRequires:  perl-XML-Writer update-desktop-files yast2-testsuite yast2-network
+BuildRequires:  update-desktop-files
 BuildRequires:  yast2-devtools
 # for install task
 BuildRequires:  rubygem(%rb_default_ruby_abi:yast-rake)

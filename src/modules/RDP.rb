@@ -27,8 +27,6 @@ module Yast
       Yast.import "Progress"
       Yast.import "Linuxrc"
 
-      Yast.include self, "network/routines.rb"
-
       # Allow remote administration
       @allow_administration = false
 
@@ -91,33 +89,13 @@ module Yast
     # Update the SCR according to network settings
     # @return true on success
     def Write
-      steps = [
-        # Progress stage 1
-        _("Write firewall settings"),
-        # Progress stage 2
-        _("Configure xrdp")
-      ]
-
-      if Mode.normal
-        # Progress stage 3
-        if @allow_administration
-          steps = Builtins.add(steps, _("Restart the services"))
-        else
-          steps = Builtins.add(steps, _("Stop the services"))
-        end
-      end
-
-      caption = _("Saving Remote Administration (RDP) Configuration")
-      sl = 0 #100; //for testing
-
-      Progress.New(caption, " ", Builtins.size(steps), steps, [], "")
-
-      ProgressNextStage(_("Writing firewall settings..."))
+      start_write_progress
+      Progress.NextStage
       write_firewall_settings
+
+      sl = 0 #100; //for testing
       Builtins.sleep(sl)
-
-      ProgressNextStage(_("Configuring xrdp..."))
-
+      Progress.NextStage
       if @allow_administration
         # Enable xrdp
         if !Service.Enable("xrdp")
@@ -134,13 +112,8 @@ module Yast
       Builtins.sleep(sl)
 
       if Mode.normal
-        if @allow_administration
-          ProgressNextStage(_("Restarting the service..."))
-          Service.Restart("xrdp")
-        else
-          ProgressNextStage(_("Stopping the service..."))
-          Service.Stop("xrdp")
-        end
+        Progress.NextStage
+        @allow_administration ? Service.Restart("xrdp") : Service.Stop("xrdp")
 
         Builtins.sleep(sl)
         Progress.NextStage
@@ -181,6 +154,40 @@ module Yast
     publish :function => :Read, :type => "boolean ()"
     publish :function => :Write, :type => "boolean ()"
     publish :function => :Summary, :type => "string ()"
+
+  private
+
+    # Convenience method to show the write progress dialog
+    def start_write_progress
+      caption = _("Saving Remote Administration (RDP) Configuration")
+
+      steps = progress_write_steps.map {|s| s[:step] }
+      titles = progress_write_steps.map {|s| s[:title] }
+      Progress.New(caption, " ", steps.size, steps, titles, "")
+    end
+
+    # Convenience method to obtain the write progress steps and titles
+    # descriptions
+    #
+    # @return [Array<Hash<Symbol, String>>] all the steps descriptions
+    def progress_write_steps
+      steps = []
+      steps << { step: _("Write firewall settings"), title: _("Writing firewall settings...") }
+      steps << { step: _("Configure xrdp"), title: _("Configuring xrdp...") }
+      steps << write_service_step if Mode.normal
+      steps
+    end
+
+    # Return the rpd service progress step description
+    #
+    # @return [Hash<Symbol, String>]
+    def write_service_step
+      if @allow_administration
+        { step: _("Restart the services"), title: _("Restarting the service...") }
+      else
+        { step: _("Stop the services"), title: _("Stopping the service...") }
+      end
+    end
   end
 
   RDP = RDPClass.new
