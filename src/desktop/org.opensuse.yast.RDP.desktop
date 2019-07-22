@@ -19,7 +19,8 @@ X-SuSE-YaST-Keywords=remote,desktop,rdp,network,windows
 Icon=yast-remote-rdp
 Exec=xdg-su -c "/sbin/yast2 rdp"
 
-Name=Remote Administration (RDP)
-GenericName=Configure RDP (Remote Desktop Protocol)
+Name=YaST Remote Administration
+GenericName=Remote Administration (RDP)
+Comment=Configure RDP (Remote Desktop Protocol)
 StartupNotify=true
 X-KDE-SubstituteUID=true
