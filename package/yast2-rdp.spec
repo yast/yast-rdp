@@ -1,7 +1,7 @@
 #
 # spec file for package yast2-rdp
 #
-# Copyright (c) 2016 SUSE LINUX GmbH, Nuernberg, Germany.
+# Copyright (c) 2023 SUSE LLC
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -15,13 +15,14 @@
 # Please submit bugfixes or comments via https://bugs.opensuse.org/
 #
 
+
 Name:           yast2-rdp
 Version:        4.6.0
 Release:        0
 License:        GPL-2.0-only
 Group:          System/YaST
 Summary:        Setup Remote Desktop Protocol service for remote administration
-Url:            https://github.com/yast/yast-rdp
+URL:            https://github.com/yast/yast-rdp
 
 Source0:        %{name}-%{version}.tar.bz2
 
